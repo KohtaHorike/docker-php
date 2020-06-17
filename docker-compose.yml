@@ -1,0 +1,31 @@
+version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./web/conf/default.conf:/etc/nginx/conf.d/default.conf
+  app:
+    build: php
+    volumes:
+      - ./php/src:/var/www/
+
+  mysql:
+    #https://hub.docker.com/_/mysql
+    image: mysql:8.0.18
+    environment:
+      #イメージの起動時に作成するデータベースの名前
+      MYSQL_DATABASE: test
+      #このユーザはMYSQL_DATABASE変数で指定されたデータベースに対してスーパーユーザとしての権限(GRANT ALL)を保持する
+      MYSQL_USER: admin
+      #MYSQL_USERのパスワード
+      MYSQL_PASSWORD: admin
+      # MySQLにおけるスーパーユーザであるrootアカウントに設定するためのパスワード
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/etc-mysql.cnf:/etc/mysql/conf.d/etc-mysql.cnf
